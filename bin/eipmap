@@ -84,10 +84,10 @@ begin
   when :export
     if output_file == '-'
       logger.info('# Export Logs')
-      puts client.export(options)
+      puts client.export
     else
       logger.info("Export Logs to `#{output_file}`")
-      open(output_file, 'wb') {|f| f.puts client.export(options) }
+      open(output_file, 'wb') {|f| f.puts client.export }
     end
   when :apply
     unless File.exist?(file)
