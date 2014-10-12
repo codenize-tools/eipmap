@@ -9,7 +9,7 @@ class Eipmap::Exporter
   end
 
   def export
-    result = {"vpc" => {}, "standard" => {}}
+    result = {}
 
     @ec2.describe_addresses.each do |response|
       response.addresses.each do |address|
@@ -25,14 +25,19 @@ class Eipmap::Exporter
   def export_address(address, result)
     domain = address.domain
     public_ip = address.public_ip
+    result[domain] ||= {}
+    result[domain][public_ip] = {}
 
-    result[domain][public_ip] = {
-      :instance_id          => empty_to_nil(address.instance_id),
-      :allocation_id        => empty_to_nil(address.allocation_id),
-      :association_id       => empty_to_nil(address.association_id),
-      :network_interface_id => empty_to_nil(address.network_interface_id),
-      :private_ip_address   => empty_to_nil(address.private_ip_address),
-    }
+    [
+      :instance_id,
+      :allocation_id,
+      :association_id,
+      :network_interface_id,
+      :private_ip_address,
+    ].each do |key|
+      value = empty_to_nil(address[key])
+      result[domain][public_ip][key] = value if value
+    end
   end
 
   def empty_to_nil(str)

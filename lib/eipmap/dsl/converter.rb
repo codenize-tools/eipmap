@@ -17,7 +17,7 @@ class Eipmap::DSL::Converter
   def output_domains(domains)
     domains.each.sort_by {|k, v| k }.map {|domain, ips|
       output_domain(domain, ips)
-    }.select {|i| i }.join("\n")
+    }.join("\n")
   end
 
   def output_domain(domain, ips)
