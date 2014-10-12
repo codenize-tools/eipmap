@@ -11,7 +11,7 @@ class Eipmap::DSL::Context::Domain
 
   def ip(ip_address, options = {})
     if @result[ip_address]
-      raise "Domain `#{@domain}`: IP `#{ip_address}` is already defined"
+      raise "#{@domain} > #{ip_address}: already defined"
     end
 
     @result[ip_address] = options

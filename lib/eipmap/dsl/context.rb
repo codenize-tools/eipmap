@@ -33,7 +33,7 @@ class Eipmap::DSL::Context
 
     Eipmap::DSL::Context::Domain.new(name, &block).result.each do |ip, attrs|
       if @result[name][ip]
-        raise "Domain `#{name}`: IP `#{ip}` is already defined"
+        raise "#{name} > #{ip}: already defined"
       end
 
       @result[name][ip] = attrs
