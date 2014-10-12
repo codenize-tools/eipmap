@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Eipmap::VERSION
   spec.authors       = ['Genki Sugawara']
   spec.email         = ['sgwr_dts@yahoo.co.jp']
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{Eipmap is a tool to manage Elastic IP Addresses (EIP).}
+  spec.description   = %q{Eipmap is a tool to manage Elastic IP Addresses (EIP). It defines the state of EIP using DSL, and updates EIP according to DSL.}
   spec.homepage      = 'https://github.com/winebarrel/eipmap'
   spec.license       = 'MIT'
 

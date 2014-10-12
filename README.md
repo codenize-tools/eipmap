@@ -4,6 +4,8 @@ Eipmap is a tool to manage Elastic IP Addresses (EIP).
 
 It defines the state of EIP using DSL, and updates EIP according to DSL.
 
+[![Gem Version](https://badge.fury.io/rb/eipmap.svg)](http://badge.fury.io/rb/eipmap)
+
 ## Installation
 
 Add this line to your application's Gemfile:
