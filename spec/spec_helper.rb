@@ -23,10 +23,10 @@ def run_instances(n)
   $test_instance_ids = instance_ids
 end
 
-def terminate_instances(instance_ids)
+def terminate_instances
   return unless $test_instance_ids
-  $ec2.terminate_instances(instance_ids: instance_ids)
-  $ec2.wait_until(:instance_terminated, instance_ids: instance_ids)
+  $ec2.terminate_instances(instance_ids: $test_instance_ids)
+  $ec2.wait_until(:instance_terminated, instance_ids: $test_instance_ids)
 end
 
 def allocate_addresses(n)
@@ -35,7 +35,7 @@ def allocate_addresses(n)
   end
 end
 
-def release_addresses(allocation_ids)
+def release_addresses
   return unless $test_addresses
   allocation_ids = $test_addresses.map(&:allocation_id)
 
