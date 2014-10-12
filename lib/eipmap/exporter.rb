@@ -27,11 +27,19 @@ class Eipmap::Exporter
     public_ip = address.public_ip
 
     result[domain][public_ip] = {
-      :instance_id => address.instance_id,
-      :allocation_id => address.allocation_id,
-      :association_id => address.association_id,
-      :network_interface_id => address.network_interface_id,
-      :private_ip_address => address.private_ip_address,
+      :instance_id          => empty_to_nil(address.instance_id),
+      :allocation_id        => empty_to_nil(address.allocation_id),
+      :association_id       => empty_to_nil(address.association_id),
+      :network_interface_id => empty_to_nil(address.network_interface_id),
+      :private_ip_address   => empty_to_nil(address.private_ip_address),
     }
+  end
+
+  def empty_to_nil(str)
+    if str.nil? or str.empty?
+      nil
+    else
+      str
+    end
   end
 end
