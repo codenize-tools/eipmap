@@ -1,5 +1,5 @@
-require 'eipmap/version'
+require 'aws-sdk-core'
 
-module Eipmap
-  # Your code goes here...
-end
+module Eipmap; end
+require 'eipmap/exporter'
+require 'eipmap/version'
