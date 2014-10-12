@@ -3,7 +3,7 @@ class Eipmap::DSL
     Eipmap::DSL::Converter.convert(exported, options)
   end
 
-  def self.parse(dsl, path, opts = {})
-    # XXX:
+  def self.parse(dsl, path, options = {})
+    Eipmap::DSL::Context.eval(dsl, path, options).result
   end
 end
