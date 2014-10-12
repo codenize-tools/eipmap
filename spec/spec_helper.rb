@@ -1,7 +1,7 @@
 require 'eipmap'
 
-# Ubuntu Server 14.04 LTS (HVM), SSD Volume Type
-TEST_IMAGE_ID = 'ami-d6e7c084'
+# Amazon Linux AMI 2014.09 (HVM)
+TEST_IMAGE_ID = 'ami-d6e1c584'
 
 $ec2 = Aws::EC2::Client.new(
   access_key_id: ENV['EIPMAP_TEST_ACCESS_KEY_ID'],
