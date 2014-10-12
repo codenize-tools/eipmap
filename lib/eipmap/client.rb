@@ -1,4 +1,6 @@
 class Eipmap::Client
+  include Eipmap::Logger::Helper
+
   def initialize(options = {})
     @options = options
     @ec2 = Aws::EC2::Client.new
@@ -28,12 +30,16 @@ class Eipmap::Client
         result = walk_ips(domain, expected_ips, actual_ips)
         updated ||= result
       else
-        # XXX: output warning "IP addresses that are not allocated are defined"
+        expected_ips.each do |ip, attrs|
+          warn_not_allocated(domain, ip)
+        end
       end
     end
 
     actual.each do |domain, ips|
-      # XXX: output warning "undefined IP address exist"
+      ips.each do |ip, attrs|
+        warn_not_defined(domain, ip)
+      end
     end
 
     updated
@@ -49,12 +55,12 @@ class Eipmap::Client
         result = walk_ip(domain, ip, expected_attrs, actual_attrs)
         updated ||= result
       else
-        # XXX: output warning "IP addresses that are not allocated are defined"
+        warn_not_allocated(domain, ip)
       end
     end
 
     actual_ips.each do |ip, attrs|
-      # XXX: output warning "undefined IP address exist"
+      warn_not_defined(domain, ip)
     end
 
     updated
@@ -91,5 +97,13 @@ class Eipmap::Client
     else
       raise TypeError, "can't convert #{file} into File"
     end
+  end
+
+  def warn_not_allocated(domain, ip)
+    log(:warn, "#{domain} > #{ip}: IP address that are not allocated is defined", :color => :yellow)
+  end
+
+  def warn_not_defined(domain, ip)
+    log(:warn, "#{domain} > #{ip}: undefined IP address exist", :color => :yellow)
   end
 end
