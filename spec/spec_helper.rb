@@ -57,22 +57,20 @@ def disassociate_addresses
   end
 end
 
-def describe_instances
+def describe_network_interface
   return {} unless $test_instances
   result = {}
 
   $test_instances.each do |instance|
-    instance_id = instance.instance_id
-    result[instance_id] = {}
     interface = instance.network_interfaces.first
-    result[instance_id][:network_interface_id] = interface.network_interface_id
-    result[instance_id][:private_ip_addresses] = {}
+    interface_id = interface.network_interface_id
+    result[interface_id] = []
 
-    interface.private_ip_addresses.each do |address|
-      ip = address.private_ip_address
-      primary = address.primary
-      result[instance_id][:private_ip_addresses][ip] = primary
-    end
+    interface.private_ip_addresses.sort_by {|address|
+      address.primary ? '' : address.private_ip_address
+    }.each {|address|
+      result[interface_id] << address.private_ip_address
+    }
   end
 
   result
