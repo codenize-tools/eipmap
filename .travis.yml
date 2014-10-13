@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+- 2.0.0
+script:
+- bundle install
+- bundle exec rake
+env:
+  global:
+  - secure: "aD9louz2hQ0gp47u2ScLLeQ7MiWQKlKNLR4Ux+U6KMO/sLMnktDcBGSi01lYt/+8yA6WyD3p/ceZv/e18enuRQU3ce5i3W8Xb11uAke0za44lTP5pllI13uTz0kHB9tmRS8MRSRtT2GV9HOcGJrW8td2YhImLwfc17pVOL2NnTc="
+  - secure: "ghKQZ8jbFpQnvRWnXO9eSNRjKOZJsGoq53Og5gH4KEdIEKIMBhnek7gOt34BfDFWSULJ7HRuuyIaftCy6r6rDJfV01zc88Pp+cRsf2LCfEpbEmXWBh8lBLYz0vneq6uoYpQ3y7FhedVkM89gQlbZ3snrykvr6j2FS6v/TUCgctc="
+  - EIPMAP_TEST_AWS_REGION=ap-southeast-1
