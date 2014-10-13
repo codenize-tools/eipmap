@@ -66,4 +66,54 @@ end
       expect(describe_addresses["vpc"].values).to match_array [{}, {}, {}]
     end
   end
+
+  context "when swap association" do
+    let(:eips_with_one_assoc) do
+      eips.each_with_index do |(public_ip, attrs), i|
+        attrs.clear unless i.zero?
+      end
+
+      eips
+    end
+
+    let(:swapped_eips_with_one_assoc) do
+      public_ips = eips_with_one_assoc.keys
+      swapped = {}
+      mapping = {0 => 1, 1 => 0}
+
+      eips_with_one_assoc.each_with_index do |(public_ip, attrs), i|
+        ip_idx = mapping.fetch(i, i)
+        ip = public_ips[ip_idx]
+        swapped[public_ip] = eips_with_one_assoc[ip]
+      end
+
+      swapped
+    end
+
+    before do
+      apply {
+        <<-EOS
+domain "vpc" do
+<%- eips_with_one_assoc.each do |public_ip, attrs| -%>
+  ip "<%= public_ip %>", <%= attrs.inspect %>
+<%- end -%>
+end
+        EOS
+      }
+    end
+
+    it do
+      dsl = <<-EOS
+domain "vpc" do
+<%- swapped_eips_with_one_assoc.each do |public_ip, attrs| -%>
+  ip "<%= public_ip %>", <%= attrs.inspect %>
+<%- end -%>
+end
+      EOS
+
+      result = apply { dsl }
+      expect(result).to be_truthy
+      expect(describe_addresses["vpc"]).to eq swapped_eips_with_one_assoc
+    end
+  end
 end
