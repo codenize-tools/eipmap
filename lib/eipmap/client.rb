@@ -3,7 +3,8 @@ class Eipmap::Client
 
   def initialize(options = {})
     @options = options
-    @ec2 = Aws::EC2::Client.new
+    aws_config = options.delete(:aws_config) || {}
+    @ec2 = Aws::EC2::Client.new(aws_config)
     @driver = Eipmap::Driver.new(@ec2, options)
   end
 

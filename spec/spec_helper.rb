@@ -1,12 +1,16 @@
+require 'erb'
+require 'tempfile'
 require 'eipmap'
 
 # Amazon Linux AMI 2014.09 (HVM)
 TEST_IMAGE_ID = 'ami-d6e1c584'
 
-$ec2 = Aws::EC2::Client.new(
+Aws.config.update(
   access_key_id: ENV['EIPMAP_TEST_ACCESS_KEY_ID'],
   secret_access_key: ENV['EIPMAP_TEST_AWS_SECRET_ACCESS_KEY'],
   region: ENV['EIPMAP_TEST_AWS_REGION'])
+
+$ec2 = Aws::EC2::Client.new
 
 def run_instances(n)
   resp = $ec2.run_instances(
@@ -24,7 +28,6 @@ def run_instances(n)
 end
 
 def terminate_instances
-  return unless $test_instances
   instance_ids = $test_instances.map(&:instance_id)
   $ec2.terminate_instances(instance_ids: instance_ids)
   $ec2.wait_until(:instance_terminated, instance_ids: instance_ids)
@@ -37,7 +40,6 @@ def allocate_addresses(n)
 end
 
 def release_addresses
-  return unless $test_addresses
   allocation_ids = $test_addresses.map(&:allocation_id)
 
   allocation_ids.each do |allocation_id|
@@ -46,7 +48,6 @@ def release_addresses
 end
 
 def disassociate_addresses
-  return unless $test_addresses
   allocation_ids = $test_addresses.map(&:allocation_id)
   resp = $ec2.describe_addresses(allocation_ids: allocation_ids)
   association_ids = resp.addresses.map(&:association_id)
@@ -58,7 +59,6 @@ def disassociate_addresses
 end
 
 def describe_network_interface
-  return {} unless $test_instances
   result = {}
 
   $test_instances.each do |instance|
@@ -86,7 +86,7 @@ def describe_addresses
       result[domain] ||= {}
       result[domain][public_ip] = {}
 
-      [:instance_id, :network_interface_id, :private_ip_address].each do |key|
+      [:network_interface_id, :private_ip_address].each do |key|
         value = address[key] || ''
         result[domain][public_ip][key] = value unless value.empty?
       end
@@ -94,6 +94,59 @@ def describe_addresses
   end
 
   result
+end
+
+def client(user_options = {})
+  options = {logger: Logger.new('/dev/null')}
+
+  if_debug do
+    logger = Eipmap::Logger.instance
+    logger.set_debug(true)
+    options.update(
+      debug: true,
+      logger: logger,
+      aws_config: {
+        http_wire_trace: true,
+        logger: logger})
+  end
+
+  options = options.merge(user_options)
+  Eipmap::Client.new(options)
+end
+
+def tempfile(content, options = {})
+  basename = "#{File.basename __FILE__}.#{$$}"
+  basename = [basename, options[:ext]] if options[:ext]
+
+  Tempfile.open(basename) do |f|
+    f.puts(content)
+    f.flush
+    f.rewind
+    yield(f)
+  end
+end
+
+def apply(cli = client)
+  elbfile = yield
+  elbfile = ERB.new(elbfile, nil, '-').result(binding)
+
+  if_debug do
+    puts <<-EOS
+--- ELBfile ---
+#{elbfile.strip}
+---------------
+    EOS
+  end
+
+  tempfile(elbfile) do |f|
+    cli.apply(f.path)
+  end
+end
+
+def if_debug
+  if ENV['DEBUG'] == '1'
+    yield
+  end
 end
 
 RSpec.configure do |config|
