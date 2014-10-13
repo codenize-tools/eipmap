@@ -5,6 +5,8 @@ Eipmap is a tool to manage Elastic IP Addresses (EIP).
 It defines the state of EIP using DSL, and updates EIP according to DSL.
 
 [![Gem Version](https://badge.fury.io/rb/eipmap.svg)](http://badge.fury.io/rb/eipmap)
+[![Build Status](https://travis-ci.org/winebarrel/eipmap.svg?branch=master)](https://travis-ci.org/winebarrel/eipmap)
+[![Coverage Status](https://coveralls.io/repos/winebarrel/eipmap/badge.png?branch=master)](https://coveralls.io/r/winebarrel/eipmap?branch=master)
 
 ## Installation
 
