@@ -10,7 +10,13 @@ class Eipmap::Client
 
   def export
     exported = Eipmap::Exporter.export(@ec2, @options)
-    Eipmap::DSL.convert(exported, @options)
+
+    instance_ids = exported.map {|domain, ips|
+      ips.map {|ip, attrs| attrs[:instance_id] }
+    }.flatten.select {|i| i }
+
+    instance_names = @driver.describe_instance_names(instance_ids)
+    Eipmap::DSL.convert(exported, @options.merge(:instance_names => instance_names))
   end
 
   def apply(file)

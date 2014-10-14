@@ -14,6 +14,21 @@ class Eipmap::Driver
     end
   end
 
+  def describe_instance_names(instance_ids)
+    id_names = {}
+
+    @ec2.describe_instances(:instance_ids => instance_ids).each do |resp|
+      resp.reservations.each do |reservation|
+        reservation.instances.each do |instance|
+          tag = instance.tags.find {|t| t.key == 'Name' }
+          id_names[instance.instance_id] = tag.value if tag
+        end
+      end
+    end
+
+    id_names
+  end
+
   private
 
   def associate_address(domain, ip, expected_attrs, actual_attrs)

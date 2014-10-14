@@ -6,6 +6,7 @@ class Eipmap::DSL::Converter
   def initialize(exported, options = {})
     @exported = exported
     @options = options
+    @instance_names = options[:instance_names] || {}
   end
 
   def convert
@@ -54,7 +55,14 @@ end
       args << ip_options.inspect.sub(/\A\{/, '').sub(/\}\z/, '')
     end
 
-    <<-EOS
+    instance_id = attrs[:instance_id]
+    instance_name = @instance_names[instance_id]
+
+    comment = instance_name ? (<<-EOS) : ''
+  # #{instance_id} #{instance_name}
+    EOS
+
+    comment + (<<-EOS)
   ip #{args.join(', ')}
     EOS
   end
