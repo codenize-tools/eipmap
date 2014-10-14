@@ -29,6 +29,7 @@ class Eipmap::DSL::Context
   end
 
   def domain(name, &block)
+    name = name.to_s
     @result[name] ||= {}
 
     Eipmap::DSL::Context::Domain.new(name, &block).result.each do |ip, attrs|
