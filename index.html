@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Eipmap : Eipmap is a tool to manage Elastic IP Addresses (EIP). It defines the state of EIP using DSL, and updates EIP according to DSL.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Eipmap</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/winebarrel/eipmap">View on GitHub</a>
+
+          <h1 id="project_title">Eipmap</h1>
+          <h2 id="project_tagline">Eipmap is a tool to manage Elastic IP Addresses (EIP). It defines the state of EIP using DSL, and updates EIP according to DSL.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/winebarrel/eipmap/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/winebarrel/eipmap/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="eipmap" class="anchor" href="#eipmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eipmap</h1>
+
+<p><a href="http://badge.fury.io/rb/eipmap"><img src="https://badge.fury.io/rb/eipmap.svg" alt="Gem Version"></a>
+<a href="https://travis-ci.org/winebarrel/eipmap"><img src="https://travis-ci.org/winebarrel/eipmap.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/winebarrel/eipmap?branch=master"><img src="https://coveralls.io/repos/winebarrel/eipmap/badge.png?branch=master" alt="Coverage Status"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s1"><span class="pl-pds">'</span>eipmap<span class="pl-pds">'</span></span></pre></div>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install eipmap
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-sh"><pre><span class="pl-s">export</span> AWS_ACCESS_KEY_ID=<span class="pl-s1"><span class="pl-pds">'</span>...<span class="pl-pds">'</span></span>
+<span class="pl-s">export</span> AWS_SECRET_ACCESS_KEY=<span class="pl-s1"><span class="pl-pds">'</span>...<span class="pl-pds">'</span></span>
+<span class="pl-s">export</span> AWS_REGION=<span class="pl-s1"><span class="pl-pds">'</span>us-east-1<span class="pl-pds">'</span></span>
+eipmap -e -o EIPfile  <span class="pl-c"># export EIP status</span>
+vi EIPfile
+eipmap -a --dry-run
+eipmap -a             <span class="pl-c"># apply `EIPfile`</span></pre></div>
+
+<h2>
+<a id="help" class="anchor" href="#help" aria-hidden="true"><span class="octicon octicon-link"></span></a>Help</h2>
+
+<pre><code>Usage: eipmap [options]
+    -p, --profile PROFILE_NAME
+        --credentials-path PATH
+    -k, --access-key ACCESS_KEY
+    -s, --secret-key SECRET_KEY
+    -r, --region REGION
+    -a, --apply
+    -f, --file FILE
+        --dry-run
+        --allow-reassociation
+    -e, --export
+    -o, --output FILE
+        --no-color
+        --debug
+</code></pre>
+
+<h2>
+<a id="eipfile-example" class="anchor" href="#eipfile-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>EIPfile example</h2>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s1"><span class="pl-pds">'</span>other/eipfile<span class="pl-pds">'</span></span>
+
+domain <span class="pl-s1"><span class="pl-pds">"</span>standard<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  ip <span class="pl-s1"><span class="pl-pds">"</span>54.256.256.1<span class="pl-pds">"</span></span>
+  ip <span class="pl-s1"><span class="pl-pds">"</span>54.256.256.2<span class="pl-pds">"</span></span>, <span class="pl-c1">:instance_id</span>=&gt;<span class="pl-s1"><span class="pl-pds">"</span>i-12345678<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+
+domain <span class="pl-s1"><span class="pl-pds">"</span>vpc<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  ip <span class="pl-s1"><span class="pl-pds">"</span>54.256.256.11<span class="pl-pds">"</span></span>, <span class="pl-c1">:network_interface_id</span>=&gt;<span class="pl-s1"><span class="pl-pds">"</span>eni-12345678<span class="pl-pds">"</span></span>, <span class="pl-c1">:private_ip_address</span>=&gt;<span class="pl-s1"><span class="pl-pds">"</span>10.0.1.1<span class="pl-pds">"</span></span>
+  ip <span class="pl-s1"><span class="pl-pds">"</span>54.256.256.12<span class="pl-pds">"</span></span>, <span class="pl-c1">:network_interface_id</span>=&gt;<span class="pl-s1"><span class="pl-pds">"</span>eni-12345678<span class="pl-pds">"</span></span>  <span class="pl-c">#, :private_ip_address=&gt;"10.0.1.2" (optional)</span>
+  ip <span class="pl-s1"><span class="pl-pds">"</span>54.256.256.13<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span></pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Eipmap maintained by <a href="https://github.com/winebarrel">winebarrel</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
