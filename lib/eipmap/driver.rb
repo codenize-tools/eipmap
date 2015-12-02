@@ -52,7 +52,17 @@ class Eipmap::Driver
       log_info[:instance_id] = instance_id
     end
 
-    log(:info, "#{domain} > #{ip}: Associate to #{log_info.inspect}", :color => :green)
+    msg = "#{domain} > #{ip}: Associate"
+
+    if instance_id = actual_attrs[:instance_id]
+      instance_names = describe_instance_names([instance_id])
+      instance_name = instance_names.fetch(instance_id, instance_id)
+      msg << " from #{instance_name}"
+    end
+
+    msg << " to #{log_info.inspect}"
+
+    log(:info, msg, :color => :green)
 
     unless_dry_run do
       @ec2.associate_address(params)
@@ -68,7 +78,16 @@ class Eipmap::Driver
       params[:public_ip] = ip
     end
 
-    log(:info, "#{domain} > #{ip}: Dissociate", :color => :red)
+    msg = "#{domain} > #{ip}: Dissociate"
+
+
+    if instance_id = actual_attrs[:instance_id]
+      instance_names = describe_instance_names([instance_id])
+      instance_name = instance_names.fetch(instance_id, instance_id)
+      msg << " from #{instance_name}"
+    end
+
+    log(:info, msg, :color => :red)
 
     unless_dry_run do
       @ec2.disassociate_address(params)
