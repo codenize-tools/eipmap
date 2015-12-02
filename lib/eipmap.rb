@@ -1,5 +1,6 @@
 require 'logger'
 require 'singleton'
+require 'ipaddr'
 
 require 'aws-sdk-core'
 require 'term/ansicolor'

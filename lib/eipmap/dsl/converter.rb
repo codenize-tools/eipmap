@@ -32,7 +32,7 @@ end
   end
 
   def output_ips(ips)
-    ips.sort_by {|k, v| k }.map {|ip, attrs|
+    ips.sort_by {|k, v| [@instance_names[v[:instance_id]], IPAddr.new(k).to_i].to_s }.map {|ip, attrs|
       output_ip(ip, attrs)
     }.join.strip
   end
@@ -59,7 +59,7 @@ end
     instance_name = @instance_names[instance_id]
 
     comment = instance_name ? (<<-EOS) : ''
-  # #{instance_id} #{instance_name}
+  # #{instance_name} #{instance_id}
     EOS
 
     comment + (<<-EOS)
