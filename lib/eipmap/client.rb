@@ -31,6 +31,10 @@ class Eipmap::Client
     updated = false
 
     expected.each do |domain, expected_ips|
+      if @options[:domain] and @options[:domain] != domain
+        next
+      end
+
       actual_ips = actual.delete(domain)
 
       if actual_ips
@@ -44,6 +48,10 @@ class Eipmap::Client
     end
 
     actual.each do |domain, ips|
+      if @options[:domain] and @options[:domain] != domain
+        next
+      end
+
       ips.each do |ip, attrs|
         warn_not_defined(domain, ip)
       end
